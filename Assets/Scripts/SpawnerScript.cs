@@ -2,6 +2,20 @@ using UnityEngine;
 
 public class SpawnerScript : MonoBehaviour
 {
+    private static float _pipeIntervalLevel = 0.5f;
+    public static float pipeIntervalLevel
+    {
+        get {  return _pipeIntervalLevel; }
+        set { _pipeIntervalLevel = value; timeLeftFood = timeLeft + timeout / 2.0f; }
+    }
+
+    private static float _pipeGapLevel = 6.0f;
+    public static float pipeGapLevel
+    {
+        get { return _pipeGapLevel; }
+        set { _pipeGapLevel = Mathf.Clamp(value, 5.0f, 7.0f); timeLeftFood = timeLeft + timeout / 2.0f; }
+    }
+
     [SerializeField]
     private GameObject pipePrefab;  // серіалізувати можна ресурси (не тільки числа)
 
@@ -16,15 +30,15 @@ public class SpawnerScript : MonoBehaviour
     private GameObject[] foodPrefabs;
 
     // Реалізація таймера (періодичних подій)
-    private float timeout = 5.0f;
-    private float timeLeft;
-    private float timeLeftFood;
-    private float timeLeftCloud;
+    private static float timeout => 1.0f + 2.0f * pipeIntervalLevel;
+    private static float timeLeft;
+    private static float timeLeftFood;
+    private  float timeLeftCloud;
 
     void Start()
     {
         timeLeft = 0;
-        timeLeftFood = timeout / 2.0f;
+        timeLeftFood =timeLeft+ timeout / 2.0f;
         timeLeftCloud = timeout / 1.5f;
     }
 
@@ -35,7 +49,7 @@ public class SpawnerScript : MonoBehaviour
         {
             timeLeft = timeout;
             SpawnPipe();
-            if (Random.Range(0f, 1f) < 0.05f)
+            if (Random.Range(0f, 1f) < 0.25f)
             {
                 SpawnLife();
             }
@@ -58,8 +72,11 @@ public class SpawnerScript : MonoBehaviour
     private void SpawnPipe()
     {
         var pipe = GameObject.Instantiate(pipePrefab);       // ~ new pipePrefab
+        float gap = pipeGapLevel;
         pipe.transform.position = this.transform.position    // точка Spawner
             + Vector3.up * Random.Range(-1.5f, 1.5f);        // + випадкове зміщення по вертикалі
+        var pipescript= pipe.GetComponent<PipeScript>();
+        pipescript.SetGap(gap);
     }
     private void SpawnFood()
     {

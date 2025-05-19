@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,11 +11,13 @@ public class BirdScript : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI alertTitle;
     [SerializeField] private TMPro.TextMeshProUGUI triesTitle;
 
+    public static int pipesPassed;
     [SerializeField] private Transform triesContainer;
     [SerializeField] private GameObject tryBirdPrefab;
     private Rigidbody2D rb;
     private float health;
     private int tries;
+    private Collider2D[] colliders; 
 
     void Start()
     {
@@ -24,6 +27,9 @@ public class BirdScript : MonoBehaviour
         tries = 3;
         //triesTitle.text = tries.ToString();
         TriesDisplay();
+
+        colliders = GetComponents<Collider2D>();
+        pipesPassed = 0;
     }
 
     void Update()
@@ -41,6 +47,8 @@ public class BirdScript : MonoBehaviour
         {
             healthIndicator.fillAmount = health / 100f;
         }
+        transform.eulerAngles = new Vector3(0, 0, 2 * rb.linearVelocityY);
+        rb.linearVelocityX = 0f;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -61,9 +69,21 @@ public class BirdScript : MonoBehaviour
             //triesTitle.text = tries.ToString();
             TriesDisplay();
         }
-        Debug.Log(collision.tag);
+        //Debug.Log(collision.tag);
     }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
 
+        if(collision.CompareTag("Gap"))
+        {
+            if (!colliders.Any(c => c.bounds.Intersects(collision.bounds)))
+            {
+                //Debug.Log("Exit Last");
+                pipesPassed += 1;
+            }
+        }
+        //Debug.Log("Exit" + collision.tag);
+    }
     private void Loose(string alertMessage)
     {
         tries -= 1;

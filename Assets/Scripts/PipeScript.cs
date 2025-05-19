@@ -2,12 +2,15 @@ using UnityEngine;
 
 public class PipeScript : MonoBehaviour
 {
-    void Start()
+    [SerializeField]
+    private Transform topPipe;
+
+    [SerializeField]
+    private Transform bottomPipe;
+    public void SetGap(float gap)
     {
-        
+        topPipe.localPosition = new Vector3(0, gap, 0);
+        bottomPipe.localPosition = new Vector3(0, -gap, 0);
     }
-    void Update()
-    {
-      
-    }
+
 }
