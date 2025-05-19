@@ -13,7 +13,7 @@ public class SpawnerScript : MonoBehaviour
     public static float pipeGapLevel
     {
         get { return _pipeGapLevel; }
-        set { _pipeGapLevel = Mathf.Clamp(value, 5.0f, 7.0f); timeLeftFood = timeLeft + timeout / 2.0f; }
+        set { _pipeGapLevel = value; timeLeftFood = timeLeft + timeout / 2.0f; }
     }
 
     [SerializeField]

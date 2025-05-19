@@ -45,6 +45,6 @@ public class PauseScript : MonoBehaviour
 
     public void PipeGapValueChanged(float value)
     {
-        SpawnerScript.pipeGapLevel = value;
+        SpawnerScript.pipeGapLevel = Mathf.Lerp(5.0f, 7.0f, 1.0f - value);
     }
 }
